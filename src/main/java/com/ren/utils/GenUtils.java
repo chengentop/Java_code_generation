@@ -34,9 +34,9 @@ public class GenUtils {
         templates.add("template/Service.java.vm");
         templates.add("template/ServiceImpl.java.vm");
         templates.add("template/Controller.java.vm");
-        templates.add("template/list.html.vm");
-        templates.add("template/list.js.vm");
-        templates.add("template/menu.sql.vm");
+        // templates.add("template/list.html.vm");
+        // templates.add("template/list.js.vm");
+        //  templates.add("template/menu.sql.vm");
         return templates;
     }
 
@@ -44,7 +44,7 @@ public class GenUtils {
      * 生成代码
      */
     @SuppressWarnings("deprecation")
-	public static void generatorCode(Map<String, String> table,
+    public static void generatorCode(Map<String, String> table,
                                      List<Map<String, String>> columns, ZipOutputStream zip) {
         //配置信息
         Configuration config = getConfig();
@@ -55,6 +55,7 @@ public class GenUtils {
         tableEntity.setComments(table.get("tableComment"));
         //表名转换成Java类名
         String className = tableToJava(tableEntity.getTableName(), config.getString("tablePrefix"));
+        System.err.println(className);
         tableEntity.setClassName(className);
         tableEntity.setClassname(StringUtils.uncapitalize(className));
 
@@ -144,7 +145,7 @@ public class GenUtils {
                 IOUtils.closeQuietly(sw);
                 zip.closeEntry();
             } catch (IOException e) {
-            	throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
+                throw new RuntimeException("渲染模板失败，表名：" + tableEntity.getTableName(), e);
             }
         }
     }
@@ -162,7 +163,12 @@ public class GenUtils {
      */
     public static String tableToJava(String tableName, String tablePrefix) {
         if (StringUtils.isNotBlank(tablePrefix)) {
-            tableName = tableName.replace(tablePrefix, "");
+            //下面这两行代码 不是必须的，反正是按照我的习惯改的
+            StringBuffer temp = new StringBuffer((tableName));
+            String temp1 = temp.replace(0, 1,"").toString();
+            //必须的
+            tableName = temp1.replace(tablePrefix, "");
+
         }
         return columnToJava(tableName);
     }
@@ -174,7 +180,7 @@ public class GenUtils {
         try {
             return new PropertiesConfiguration("generator.properties");
         } catch (ConfigurationException e) {
-        	throw new RuntimeException("获取配置文件失败，", e);
+            throw new RuntimeException("获取配置文件失败，", e);
         }
     }
 
@@ -188,11 +194,11 @@ public class GenUtils {
         }
 
         if (template.contains("Entity.java.vm")) {
-            return packagePath + "entity" + File.separator + className + "Entity.java";
+            return packagePath + "entity" + File.separator + className + ".java";
         }
 
         if (template.contains("Dao.java.vm")) {
-            return packagePath + "dao" + File.separator + className + "Dao.java";
+            return packagePath + "dao" + File.separator + "I" + className + "Dao.java";
         }
 
         if (template.contains("Dao.xml.vm")) {
@@ -200,7 +206,7 @@ public class GenUtils {
         }
 
         if (template.contains("Service.java.vm")) {
-            return packagePath + "service" + File.separator + className + "Service.java";
+            return packagePath + "service" + File.separator + "I" + className + "Service.java";
         }
 
         if (template.contains("ServiceImpl.java.vm")) {
@@ -211,18 +217,18 @@ public class GenUtils {
             return packagePath + "controller" + File.separator + className + "Controller.java";
         }
 
-        if (template.contains("list.html.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "views" + File.separator + "page"
-                    + File.separator + "sys" + File.separator + className.toLowerCase() + ".html";
-        }
+        //  if (template.contains("list.html.vm")) {
+        //      return "main" + File.separator + "resources" + File.separator + "views" + File.separator + "page"
+        //             + File.separator + "sys" + File.separator + className.toLowerCase() + ".html";
+        //  }
 
-        if (template.contains("list.js.vm")) {
-            return "main" + File.separator + "resources" + File.separator + "js" + File.separator + "sys" + File.separator + className.toLowerCase() + ".js";
-        }
+        // if (template.contains("list.js.vm")) {
+        //     return "main" + File.separator + "resources" + File.separator + "js" + File.separator + "sys" + File.separator + className.toLowerCase() + ".js";
+        // }
 
-        if (template.contains("menu.sql.vm")) {
-            return className.toLowerCase() + "_menu.sql";
-        }
+        //  if (template.contains("menu.sql.vm")) {
+        //     return className.toLowerCase() + "_menu.sql";
+        // }
 
         return null;
     }
