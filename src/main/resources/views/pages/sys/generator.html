@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>代码生成器</title>
+    <!-- #parse("sys/header.html") -->
+    <!--<block include="/views/views/statics/common/page/header"></block>-->
+</head>
+<body>
+<h1>代码生成器</h1>
+<div id="sysGenerator">
+    <Row :gutter="16">
+        <div class="search-group">
+            <i-col span="4">
+                <i-input v-model="q.tableName" @on-enter="query" placeholder="表名"/>
+            </i-col>
+            <i-button @click="query">查询</i-button>
+            <i-button @click="reloadSearch">重置</i-button>
+        </div>
+        <div class="buttons-group">
+            <i-button type="primary" @click="generator"><i class="fa fa-file-code-o"></i>&nbsp;生成代码</i-button>
+        </div>
+    </Row>
+    <table id="sysGeneratorGrid"></table>
+</div>
+<!--bootstrap-->
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" href="/static/css/bootstrap.min.css"/>
+<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}" href="/static/css/font-awesome.min.css"/>
+<!--jqgrid-->
+<link rel="stylesheet" th:href="@{/plugins/jqgrid/ui.jqgrid-bootstrap.css}" href="/static/plugins/jqgrid/ui.jqgrid-bootstrap.css"/>
+<link rel="stylesheet" th:href="@{/plugins/ztree/css/metroStyle/metroStyle.css}" href="/static/plugins/ztree/css/metroStyle/metroStyle.css"/>
+<!--main-->
+<link rel="stylesheet" th:href="@{/css/main.css}" href="/static/css/main.css"/>
+<link rel="stylesheet" th:href="@{/css/iview.css}" href="/static/css/iview.css"/>
+<link rel="stylesheet" th:href="@{/css/style.css}" href="/static/css/style.css"/>
+<link rel="stylesheet" th:href="@{/plugins/treegrid/jquery.treegrid.css}" href="/static/plugins/treegrid/jquery.treegrid.css"/>
+<!--富文本-->
+<link rel="stylesheet" th:href="@{/plugins/froala_editor/css/froala_editor.min.css}" href="/static/plugins/froala_editor/css/froala_editor.min.css"/>
+
+<!--jquery-->
+<script type="text/javascript" th:src="@{/libs/jquery.min.js}" src="/static/libs/jquery.min.js"></script>
+<!--layer-->
+<script type="text/javascript" th:src="@{/plugins/layer/layer.js}" src="/static/plugins/layer/layer.js"></script>
+<!--bootstrap-->
+<script type="text/javascript" th:src="@{/libs/bootstrap.min.js}" src="/static/libs/bootstrap.min.js"></script>
+<!--vue-->
+<script type="text/javascript" th:src="@{/libs/vue.min.js}" src="/static/libs/vue.min.js"></script>
+<script type="text/javascript" th:src="@{/libs/iview.min.js}" src="/static/libs/iview.min.js"></script>
+<!--jqgrid-->
+<script type="text/javascript" th:src="@{/plugins/jqgrid/grid.locale-cn.js}" src="/static/plugins/jqgrid/grid.locale-cn.js"></script>
+<script type="text/javascript" th:src="@{/plugins/jqgrid/jquery.jqGrid.min.js}" src="/static/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<!--ztree-->
+<script type="text/javascript" th:src="@{/plugins/ztree/jquery.ztree.all.min.js}" src="/static/plugins/ztree/jquery.ztree.all.min.js"></script>
+<!--treegrid-->
+<script type="text/javascript" th:src="@{/plugins/treegrid/jquery.treegrid.extension.js}" src="/static/plugins/treegrid/jquery.treegrid.extension.js"></script>
+<script type="text/javascript" th:src="@{/plugins/treegrid/jquery.treegrid.min.js}" src="/static/plugins/treegrid/jquery.treegrid.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/treegrid/jquery.treegrid.bootstrap3.js}" src="/static/plugins/treegrid/jquery.treegrid.bootstrap3.js"></script>
+<script type="text/javascript" th:src="@{/plugins/treegrid/tree.table.js}" src="/static/plugins/treegrid/tree.table.js"></script>
+
+<!--simplemde富文本-->
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/froala_editor.min.js}" src="/static/plugins/froala_editor/js/froala_editor.min.js"></script>
+<!--[if lt IE 9]>
+<!--<script type="text/javascript" th:src="@{/views/statics/plugins/froala_editor/js/froala_editor_ie8.min.js}" src="/views/statics/plugins/froala_editor/js/froala_editor_ie8.min.js"></script>-->
+<!--<![endif]&ndash;&gt;-->
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/tables.min.js}" src="/static/plugins/froala_editor/js/plugins/tables.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/lists.min.js}" src="/static/plugins/froala_editor/js/plugins/lists.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/colors.min.js}" src="/static/plugins/froala_editor/js/plugins/colors.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/media_manager.min.js}" src="/static/plugins/froala_editor/js/plugins/media_manager.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/font_family.min.js}" src="/static/plugins/froala_editor/js/plugins/font_family.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/font_size.min.js}" src="/static/plugins/froala_editor/js/plugins/font_size.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/block_styles.min.js}" src="/static/plugins/froala_editor/js/plugins/block_styles.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/plugins/video.min.js}" src="/static/plugins/froala_editor/js/plugins/video.min.js"></script>
+<script type="text/javascript" th:src="@{/plugins/froala_editor/js/langs/zh_cn.js}" src="/static/plugins/froala_editor/js/langs/zh_cn.js"></script>
+
+<script type="text/javascript" th:src="@{/libs/jquery-extend.js}" src="/static/libs/jquery-extend.js"></script>
+<script type="text/javascript" th:src="@{/common/js/common.js}" src="/static/common/js/common.js"></script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?ccd0d22c80e2ce6d344df40fbe550fbf";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<!-- <script src="${rc.contextPath/js/sys/generator.js?_${date.systemTime"></script> -->
+<script th:src="@{/js/sys/generator.js}" src="/static/js/sys/generator.js"></script>
+</body>
+</html>
